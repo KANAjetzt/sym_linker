@@ -6,8 +6,8 @@ var context_actions
 
 
 func _enter_tree() -> void:
-	context_actions = SymLinkerFileSystemContextActions.new()
-	EditorInterface.get_base_control().add_child(context_actions)
+	context_actions = SymLinkerFileSystemContextActions.new(get_editor_interface())
+	get_editor_interface().get_base_control().add_child(context_actions)
 
 
 func _exit_tree() -> void:
@@ -19,4 +19,4 @@ func _get_plugin_name():
 
 
 func _get_plugin_icon():
-	return EditorInterface.get_base_control().get_theme_icon(&"ExternalLink", &"EditorIcons")
+	return get_editor_interface().get_theme_icon(&"ExternalLink", &"EditorIcons")

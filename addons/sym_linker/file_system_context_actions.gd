@@ -6,6 +6,7 @@ extends Control
 var file_dialog := FileDialog.new()
 var src_dir := ""
 var dst_dir := ""
+var editor_interface: EditorInterface
 
 class ContextActionOptions:
 	extends Resource
@@ -22,13 +23,15 @@ class ContextActionOptions:
 		tooltip = _tooltip
 
 
-func _init() -> void:
+func _init(_editor_interface: EditorInterface) -> void:
+	editor_interface = _editor_interface
+	
 	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_DIR
 	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
 	file_dialog.min_size = Vector2(800, 400)
 	file_dialog.title = "Select Directory"
 
-	connect_file_system_context_actions(EditorInterface.get_file_system_dock())
+	connect_file_system_context_actions(editor_interface.get_file_system_dock())
 
 
 func _ready() -> void:
@@ -82,7 +85,7 @@ func add_custom_context_actions(context_menu: PopupMenu, file_path: String) -> v
 
 func add_context_action(context_menu: PopupMenu, path: String, options: ContextActionOptions) -> void:
 	context_menu.add_icon_item(
-				EditorInterface.get_base_control().get_theme_icon(options.icon, &"EditorIcons"),
+				editor_interface.get_base_control().get_theme_icon(options.icon, &"EditorIcons"),
 				"SymLinker: %s" % options.title
 			)
 	context_menu.set_item_metadata(
@@ -158,6 +161,6 @@ func _on_file_dialog_dir_selected(dir: String) -> void:
 			return
 
 		print_rich("[color=#00ff0095]SymLinker: Successfully linked \"%s\" in \"%s\" [/color]" % [src_dir, dst_dir])
-		EditorInterface.get_resource_filesystem().scan_sources()
+		editor_interface.get_resource_filesystem().scan_sources()
 	else:
 		print("SymLinker: ERROR: No dir selected.")
